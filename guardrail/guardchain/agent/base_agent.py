@@ -76,6 +76,12 @@ class BaseAgent(BaseModel, ABC):
     ) -> Optional[AgentFinish]:
         """Determine if agent should continue to answer user questions based on the latest user query."""
         return None
+    
+    def safe_prompt(
+        self, safe_prompt_template: str = "", **kwargs
+    ) -> Optional[AgentFinish]:
+        """Determine if agent should continue to answer user questions based on the safety of the input prompt."""
+        return None
 
     @abstractmethod
     def plan(

@@ -11,6 +11,7 @@ from guardrail.guardchain.agent.prompts import (
     CLARIFYING_QUESTION_PROMPT_TEMPLATE,
     PLANNING_PROMPT_TEMPLATE,
     SHOULD_ANSWER_PROMPT_TEMPLATE,
+    SAFE_PROMPT_TEMPLATE,
     FIX_TOOL_INPUT_PROMPT_TEMPLATE,
 )
 from guardrail.guardchain.agent.message import BaseMessage, ChatMessageHistory, UserMessage
@@ -61,7 +62,7 @@ class ChatAgent(BaseAgent):
 
     def should_answer(
         self,
-        should_answer_prompt_template: str = SHOULD_ANSWER_PROMPT_TEMPLATE,
+        should_answer_prompt_template: str = SAFE_PROMPT_TEMPLATE,
         **kwargs,
     ) -> Optional[AgentFinish]:
         if "history" not in kwargs or not kwargs["history"]:
@@ -72,8 +73,8 @@ class ChatAgent(BaseAgent):
             **kwargs,
         }
 
-        def _parse_response(res: str):
-            if "False" in res:
+        def _parse_response(res: dict):
+            if 'safe_prompt' in res and res['safe_prompt'] == 'no':
                 return AgentFinish(
                     message="Thank you for contacting",
                     log="Thank you for contacting",

@@ -156,4 +156,28 @@ class EmbeddingModel:
         # Perform UMAP to obtain the reduced embeddings
         reduced_embeddings = umap_model.fit_transform(embeddings)
 
-        return reduced_embeddings
+        return 
+    
+    def add_laplace_noise(self, epsilon):
+        """
+        Add Laplace noise to the embeddings to achieve differential privacy.
+
+        Parameters:
+            epsilon (float): The privacy parameter that controls the amount of noise added.
+
+        Returns:
+            None (The method modifies the 'embedding_data' dictionary in-place).
+        """
+        for key, embedding in self.embedding_data.items():
+            noise = np.random.laplace(scale=1.0 / epsilon, size=embedding.shape)
+            self.embedding_data[key] = embedding + noise
+
+    def remove_laplace_noise(self):
+        """
+        Remove the previously added Laplace noise from the embeddings.
+
+        Returns:
+            None (The method modifies the 'embedding_data' dictionary in-place).
+        """
+        for key, embedding in self.embedding_data.items():
+            self.embedding_data[key] = np.round(embedding)  # Remove the added noise by rounding the values
