@@ -1,9 +1,9 @@
 import openai
-from . import prompts
-from ..utils.keys import init_openai_key
+from ..offline_evals import prompts
+from ..utils.keys import init_openai_key, init_guardrail_key
 from ..utils.textutils import TextUtilities
 
-class OpenAIProvider():
+class OpenAIEvaluator():
     model_engine: str
 
     def __init__(
@@ -16,6 +16,10 @@ class OpenAIProvider():
         self.text_utils = TextUtilities()
 
         print(init_openai_key())
+
+    def run_online_moderation_metrics(self, prompt, output):
+        moderation_not_hate = self.moderation_not_hate(output)
+        moderation_not_hatethreatening = self.moderation_not_hatethreatening(output)
 
     def _create_chat_completion(self, *args, **kwargs):
         return openai.ChatCompletion.create(*args, **kwargs)
@@ -79,7 +83,7 @@ class OpenAIProvider():
     def moderation_not_harassmentthreatening(self, text: str) -> float:
         return self._calculate_inverted_score("harassment/threatening", text)
 
-    # Define evaluation methods
+    ### Define LangChain evaluation methods
     def conciseness(self, text: str) -> float:
         return self.evaluate_text(text, prompts.LANGCHAIN_CONCISENESS_PROMPT)
 

@@ -7,12 +7,7 @@
 import logging
 import sqlite3
 
-from .metrics.textstat import Textstat
-from .metrics.toxicity import Toxicity
-from .metrics.relevance import Relevance
-from .metrics.injections import PromptInjection
-from .metrics.sentiment import Sentiment
-from .metrics.bias import Bias
+from .metrics.offline_evals import Bias, Toxicity, Relevance, PromptInjection, Sentiment, Textstat
 
 from .dataset.dataset_generator import DatasetGenerator
 from .db import insert_log
